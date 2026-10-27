@@ -29,15 +29,18 @@ def _body_font(size):
     return ImageFont.truetype(hits[0], size) if hits else _display_font(size)
 
 
-def _smart_crop(im, W, H):
-    """crop to W:H, sliding the window toward the region with the most edges (usually the subject)"""
+def _smart_crop(im, W, H, layout="left"):
+    """crop to W:H; keep the busy region (the subject) out of the zone the title will cover"""
     s = max(W / im.width, H / im.height)
     im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
     e = np.asarray(im.convert("L").filter(ImageFilter.FIND_EDGES), np.float32)
-    best, bx, by = -1, 0, 0
+    best, bx, by = -1e9, 0, 0
     for x in range(0, im.width - W + 1, max(1, (im.width - W) // 24 or 1)):
         for y in range(0, im.height - H + 1, max(1, (im.height - H) // 24 or 1)):
-            v = e[y:y + H, x:x + W].mean()
+            c = e[y:y + H, x:x + W]
+            text, subj = {"left": (c[:, :W // 2], c[:, W // 2:]), "right": (c[:, W // 2:], c[:, :W // 2]),
+                          "bottom": (c[H * 11 // 20:], c[:H * 11 // 20])}[layout]
+            v = subj.mean() - 0.7 * text.mean()
             if v > best: best, bx, by = v, x, y
     return im.crop((bx, by, bx + W, by + H))
 
@@ -91,7 +94,7 @@ class T8CoverStudio(IO.ComfyNode):
     def execute(cls, image, title, subtitle, aspect, layout, accent, title_scale) -> IO.NodeOutput:
         W, H = ASPECTS[aspect]
         src = Image.fromarray((image[0].cpu().numpy() * 255).clip(0, 255).astype(np.uint8)).convert("RGB")
-        im = _smart_crop(src, W, H).convert("RGBA")
+        im = _smart_crop(src, W, H, layout).convert("RGBA")
         acc = _hex(accent) or _auto_accent(src)
 
         # scrim on the text side so the title is always readable
