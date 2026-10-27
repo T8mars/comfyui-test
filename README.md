@@ -35,8 +35,9 @@ git clone https://github.com/T8mars/comfyui-test comfyui-t8-tools
 
 示例工作流：`examples/cover_workflow_api.json`（API 格式，可直接拖进 ComfyUI；示例底图 `examples/bg_asset.jpg` 先放进 `ComfyUI/input/`）。
 
-## 字体与许可
+## 许可
 
+- 代码：Apache License 2.0，见 [LICENSE](LICENSE)
 - 标题字体：得意黑 Smiley Sans（SIL OFL 1.1），见 `fonts/README_LICENSES.txt`
 - 副标题使用系统中文字体（Noto Sans CJK / 微软雅黑），找不到时退回标题字体
 - 示例底图由博主用 AI 生成（Seedream），无第三方素材
