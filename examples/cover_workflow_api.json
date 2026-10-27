@@ -1,0 +1,42 @@
+{
+ "1": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "bg_magenta.jpg"
+  }
+ },
+ "2": {
+  "class_type": "T8CoverStudio",
+  "inputs": {
+   "image": [
+    "1",
+    0
+   ],
+   "title": "工作流\n就是[资产]",
+   "subtitle": "",
+   "aspect": "3:4 竖版",
+   "layout": "bottom",
+   "accent": "auto",
+   "title_scale": 1.0
+  }
+ },
+ "3": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "2",
+    0
+   ],
+   "filename_prefix": "cover2"
+  }
+ },
+ "4": {
+  "class_type": "PreviewAny",
+  "inputs": {
+   "source": [
+    "2",
+    1
+   ]
+  }
+ }
+}
